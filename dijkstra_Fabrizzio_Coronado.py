@@ -192,7 +192,7 @@ def findChildren(node):
     children.append(newNodeUpLeft)
 
 
-    heapify(children)
+    # heapify(children)
     # print("children: ", children)
 
     return children
@@ -221,6 +221,7 @@ def dijkstra(startNode, goalNode):
         # heapify(openList)
         currentNode = heappop(openList)
         currentLocation = openListLocations.pop(0)
+        # heapify(openList)
         closedList.append(currentNode)
         closedListLocations.append(currentNode[3])
         # print("length after popping: ", len(openList))
@@ -242,17 +243,23 @@ def dijkstra(startNode, goalNode):
                     # print("cost: ", childC2C)
                     
                     if c[3] not in openListLocations:
-                        print("openListLocations: ", openListLocations, "this c is not in  openListLocations!")
+                        print("this c is not in  openListLocations!")
+                        print("openList: ", openList, "openListLocations: ", openListLocations)
+                        # print("openListLocations: ", openListLocations)
                         childC2C = currentNode[0] + c[0]
                         nodeIndex = len(openList) + len(closedList)
                         # node = (C2C, node index, parent node index, (x, y)) .. type is tuple
                         childNode = (childC2C, nodeIndex, currentNode[1], c[3]) # if the child has not been checked OR we found a lower childC2C, assign it the currentNode as the parent
                         # print("childNode",index, ": ", childNode)
                         heappush(openList, childNode)
+                        childNodexIndex = openList.index(childNode) # get the index of where we placed childNode to correctly place openListLocations
+                        print("placing at index: ", childNodexIndex)
                         openListLocations.append(childNode[3])
-                        print("just added c: ", c, "to openListLocations: ", openListLocations, "\n")
+                        # openListLocations[childNodexIndex] = childNode[3]
+                        # print("just added c: ", c, "to openListLocations: ", openListLocations, "\n")
+                        print("openList: ", openList, "openListLocations: ", openListLocations, "\n")
                     else:
-                        node1_index = openListLocations.index(c[3]) # find the index of the node that we are checking if should be updated or not
+                        node1_index = openList.index(c[3]) # find the index of the node that we are checking if should be updated or not
                         print("this c is in openListLocations! at index: ", node1_index)
                         # print("node1_index: ", node1_index)
                         print("openList: ", openList)
@@ -279,8 +286,8 @@ def dijkstra(startNode, goalNode):
         # heapify(openList)
         print("openList: ", openList, "\nopenListLocations: ", openListLocations)
         # print("openList after heapify: ", openList, "\nclosedList: ", closedList)
-        if i == 2:
-            heapify(openList)
+        if i == 4:
+            # heapify(openList)
             # print("closedList: ",closedList, "\nopenList length: ", len(openList))
             # print("openList after heapify: ", openList, "\nclosedList: ", closedList)
             print("All 3rd value from every element in OpenList: ", openList[:][3])

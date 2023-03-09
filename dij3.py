@@ -101,7 +101,7 @@ def checkObstacleSpace(node):
 
     x = node[3][0]
     y = node[3][1]
-    
+
     # hexagon equations
     m1hex = ((166 - 206)/(370 - 300)) # slope of bottom right hexagon line
     b1hex = 166 - m1hex * 370
@@ -206,10 +206,7 @@ def dijkstra(startNode, goalNode):
 
     openList = []
     openList.append(startNode)
-    openListLocations = []
-    openListLocations.append(startNode[3])
     closedList = []
-    closedListLocations = []
     locations = [startNode[3]]
 
     currentNode = openList[0]
@@ -222,7 +219,6 @@ def dijkstra(startNode, goalNode):
         # print("length after popping: ", len(openList))
         print("\nCurrent Node = ", currentNode) 
         closedList.append(currentNode)
-        closedListLocations.append(currentNode[3])
 
         if goalNodeReached(currentNode, goalNode) == True:
                 # insert backtrack function
@@ -230,55 +226,41 @@ def dijkstra(startNode, goalNode):
         else:
             index = 0
             for c in findChildren(currentNode):
-                print("current c: ", c)
-                # for cost in range(len(openList)):
-                #     if openList[cost][3] == c[3]:
-                #         print("duplicate location found!")
+                for cost in range(len(openList)):
+                    if openList[cost][3] == c[3]:
+                        print("duplicate location found!")
                         # c[1] = openList[cost][1] # 
-                if c[3] not in closedListLocations and checkObstacleSpace(c) == "Not in obstacle space":
+                if c not in closedList and checkObstacleSpace(c) == "Not in obstacle space":
                     childC2C = currentNode[0] + c[0] # adding cost of action to current C2C
                     # print("cost: ", childC2C)
-                    
-                    if c[3] not in openListLocations or childC2C < currentNode[0]:
-                        if c[3] not in openListLocations:
-                            print("this c is not in  openListLocations!")
-                            childC2C = currentNode[0] + c[0]
+                    if c not in openList or childC2C < currentNode[0]:
+                        if c not in openList:
                             nodeIndex = len(openList) + len(closedList)
                             # node = (C2C, node index, parent node index, (x, y)) .. type is tuple
                             childNode = (childC2C, nodeIndex, currentNode[1], c[3]) # if the child has not been checked OR we found a lower childC2C, assign it the currentNode as the parent
                             # print("childNode",index, ": ", childNode)
                             openList.append(childNode)
-                            openListLocations.append(childNode[3])
                         else:
-                            print("this c is in op")
-                            newC2C = currentNode[0] + c[0]
-                            node1_index = openListLocations.index(c[3]) # find the index of the node that we are checking if should be updated or not
-                            node1 = openList[node1_index]
-                            print("node1_index: ", node1_index, "node1: ", node1)
-
-                            # index = openList.index(c)
-                            # print("index: ", index)
-                            if  newC2C < node1[0]:
-                                openList[index] = c
-                                # print()
+                            index = openList.index(c)
+                            print("index: ", index)
+                            if childNode[0] < childC2C:
+                                openList[index] = c 
                             else: 
                                 openList[index]
                             print("updating: ", openList[index], "to c: ", c)
-                else:
-                    print("Current childNode is in ClosedList: ", childNode)
-                # print("openList before heapify: ", openList)
+        # print("openList before heapify: ", openList)
                 index = index + 1
                 # print("childNode",index, ": ", childNode)
-                # print("c: ", c)
+                print("c: ", c)
         # heapify(openList)
         # print("openList length: ", len(openList))
-        print("openList after heapify: ", openList, "\nclosedList: ", closedList)
+        # print("openList after heapify: ", openList, "\nclosedList: ", closedList)
         if i == 4:
             heapify(openList)
             print("closedList: ",closedList, "\nopenList length: ", len(openList))
             print("openList after heapify: ", openList, "\nclosedList: ", closedList)
-            # for node in openList:
-            #     print(node[3])
+            for node in openList:
+                print(node[3])
             break
     return "FAILURE"
 
