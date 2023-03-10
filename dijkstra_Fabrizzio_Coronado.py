@@ -234,7 +234,7 @@ def dijkstra(startNode, goalNode):
 
         if goalNodeReached(currentNode, goalNode) == True:
                 # insert backtrack function
-                return "SUCCESS"
+                return back_track(currentNode, closedList)
         else:
             index = 0
             print("Current Node children: ", findChildren(currentNode))
@@ -299,17 +299,34 @@ def dijkstra(startNode, goalNode):
             # heapify(openList)
             # print("openList: ", openList, "\nopenListLocations: ", openListLocations)
             # print("openList after heapify: ", openList, "\nclosedList: ", closedList)
-        if i == 32:
-            # print("All 3rd value from every element in OpenList: ", openList[:][3])
-            print("\nopenList: ", openList)
-            print("BREAKING LOOP")
-            break
+        # if i == 32:
+        #     # print("All 3rd value from every element in OpenList: ", openList[:][3])
+        #     print("\nopenList: ", openList)
+        #     print("BREAKING LOOP")
+        #     break
 
     return "FAILURE"
 
 ############################### Step Three ########################################
 
 ############################### Step Four #########################################
+
+def back_track(goalNode, closedList):
+    path = []
+    currentNode = goalNode
+    
+    while currentNode is not None:
+        path.append(currentNode)
+        currentNodeIndex = currentNode[2]
+        currentNode = None
+        
+        for node in closedList:
+            if node[1] == currentNodeIndex:
+                currentNode = node
+                break
+                
+    return path[::-1]
+
 ############################### Step Four #########################################
 
 ############################### Step Five #########################################
@@ -335,10 +352,10 @@ def dijkstra(startNode, goalNode):
 
 startNode = (0, 0, None, (7, 7))
 print("Node format: (C2C, Node index, parent index, (x,y)) \nstartNode: ", startNode)
-goalNode = (0, 0, None, (591, 245))
+goalNode = (0, 0, None, (9, 9))
 # findChildren(startNode)
 result = dijkstra(startNode, goalNode)
-print("result: ",result)
+print("\npath: ",result)
 
 endTime = time.time()
 print("\nrun time = ", endTime - startTime, "seconds")
