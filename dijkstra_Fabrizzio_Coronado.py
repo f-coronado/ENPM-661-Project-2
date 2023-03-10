@@ -220,14 +220,17 @@ def dijkstra(startNode, goalNode):
         # nodeIndex = len(openList)
         # heapify(openList)
         currentNode = heappop(openList)
-        currentLocation = openListLocations.pop(0)
+        # currentLocation = openListLocations.pop(0)
         # heapify(openList)
         closedList.append(currentNode)
         closedListLocations.append(currentNode[3])
         # print("length after popping: ", len(openList))
-        print("\n***********************************************\nCurrent Node from openList = ", currentNode, "currentLocation from openListLocations: ", currentLocation, \
-              "\nopenList: ", openList, "\nopenListLocations: ",openListLocations, "\nclosedList: ", closedList, \
-              "\n***********************************************")
+        print("***********************************************")
+        print("time thru open List: ", i, "\nCurrent Node from openList = ", currentNode, "\nopenList: ", openList, "\nclosedList: ", closedList) # currentLocation from openListLocations: ", currentLocation, \
+        print("***********************************************")
+      
+        #       "\nopenList: ", openList, "\nopenListLocations: ",openListLocations, "\nclosedList: ", closedList, \
+        # openListLocations.append(currentNode[3]) # to make sure the index is always in range later? pray this works
 
         if goalNodeReached(currentNode, goalNode) == True:
                 # insert backtrack function
@@ -236,63 +239,72 @@ def dijkstra(startNode, goalNode):
             index = 0
             print("Current Node children: ", findChildren(currentNode))
             for c in findChildren(currentNode):
-                print("current c: ", c)
-
+                # print("current c: ", c)
                 if c[3] not in closedListLocations and checkObstacleSpace(c) == "Not in obstacle space":
                     childC2C = currentNode[0] + c[0] # adding cost of action to current C2C
                     # print("cost: ", childC2C)
+                    num = 0
                     
-                    if c[3] not in openListLocations:
-                        print("this c is not in  openListLocations!")
-                        print("openList: ", openList, "openListLocations: ", openListLocations)
+                    for node in openList:
+                        if node[3] == c[3]:
+                            num = num + 1 # check through all locations in openList, if the location is present increment num
+                            # status = "present" # check through all locations in openList, if the location is present then do the following
+                        # else: num = 0
+                    # print("num outside of num loop: ", num)
+                    # if c[3] not in openList:
+                    if num == 0: # aka if the child location is not in the openList:
+                        print("\nc: ", c, "is not in  openList!, adding to the list...")
+                        # print("openList: ", openList) #"openListLocations: ", openListLocations)
                         # print("openListLocations: ", openListLocations)
-                        childC2C = currentNode[0] + c[0]
-                        nodeIndex = len(openList) + len(closedList)
+                        childC2C = currentNode[0] + c[0] # sum the popped node and add the child step cost
+                        nodeIndex = len(openList) + len(closedList) # index of this child node is the sum of all elements in openList and closedList
                         # node = (C2C, node index, parent node index, (x, y)) .. type is tuple
-                        childNode = (childC2C, nodeIndex, currentNode[1], c[3]) # if the child has not been checked OR we found a lower childC2C, assign it the currentNode as the parent
-                        # print("childNode",index, ": ", childNode)
-                        heappush(openList, childNode)
-                        childNodexIndex = openList.index(childNode) # get the index of where we placed childNode to correctly place openListLocations
-                        print("placing at index: ", childNodexIndex)
-                        openListLocations.append(childNode[3])
-                        # openListLocations[childNodexIndex] = childNode[3]
-                        # print("just added c: ", c, "to openListLocations: ", openListLocations, "\n")
-                        print("openList: ", openList, "openListLocations: ", openListLocations, "\n")
-                    else:
-                        node1_index = openList.index(c[3]) # find the index of the node that we are checking if should be updated or not
-                        print("this c is in openListLocations! at index: ", node1_index)
-                        # print("node1_index: ", node1_index)
-                        print("openList: ", openList)
-                        node1 = openList[node1_index]
-                        newC2C = node1[0] + c[0]
-                        print("node1_index: ", node1_index, "node1: ", node1, "\nnewC2C of child is: ", newC2C)
-
-                        # index = openList.index(c)
-                        # print("index: ", index)
-                        if  newC2C < node1[0]:
-                            nodeIndex = len(openList) + len(closedList)
-                            childNode = (newC2C, nodeIndex, currentNode[1], c[3]) # if the child has not been checked OR we found a lower childC2C, assign it the currentNode as the parent
-                            print("updating node ", openList[nodeIndex], "to: ", childNode)
-                            openList[node1_index] = childNode
-                            print("updated openList: ", openList)
-                        else: print("new C2C: ", newC2C, "> C2C: ",openList[node1_index][0], "not updating node: ", openList[node1_index])
+                        childNode = (childC2C, nodeIndex, currentNode[1], c[3]) # construct the childNode tuple
+                        heappush(openList, childNode) # place appropriately into heap
+                        print("openList: ", openList,"\n") #"openListLocations: ", openListLocations)
+                        # childNodexIndex = openList.index(childNode) # get the index of where we placed childNode to correctly place openListLocations
+                        # print("placing at index: ", childNodexIndex)
+                        # openListLocations.append(childNode[3])
+                        # if childNodexIndex >= len(openListLocations):
+                        #     print("index > len(openListLocations)")
+                        #     openListLocations.append(childNode[3])
+                        # else:
+                        #     openListLocations[childNodexIndex] = childNode[3]
+                        # # print("just added c: ", c, "to openListLocations: ", openListLocations, "\n")
+                        # print("openList: ", openList, "openListLocations: ", openListLocations, "\n")
+                    else: # child is in openList, check if we need to update
+                        for node in openList:
+                            if node[3] == c[3]:
+                                node1_index = openList.index(node) # if the node location = this child location, get its index
+                                print("\nc: ", c, "is in openList! at index: ", node1_index)
+                                # print("node1_index: ", node1_index)
+                                print("openList: ", openList)
+                                node1 = openList[node1_index] # gather the entire node from openList
+                                newC2C = currentNode[0] + c[0] # add the current childs cost to its parent to compare with node1 in openList
+                                print("node1_index: ", node1_index, "node1: ", node1, "newC2C of child is: ", newC2C)
+                                if  newC2C < node1[0]:
+                                    nodeIndex = len(openList) + len(closedList) # node index = length of openList + closedList
+                                    childNode = (newC2C, nodeIndex, currentNode[1], c[3]) # if the child has not been checked OR we found a lower childC2C, assign it the currentNode as the parent
+                                    print("     updating node ", openList[nodeIndex], "to: ", childNode)
+                                    openList[node1_index] = childNode
+                                    print("     updated openList: ", openList)
+                                else: print("       new C2C: ", newC2C, "> C2C: ",openList[node1_index][0], "not updating node: ", openList[node1_index])
                 else:
-                    print("this c is in ClosedListLocations: ", closedListLocations)
-                # print("openList before heapify: ", openList)
-                index = index + 1
-                # print("childNode",index, ": ", childNode)
-                # print("c: ", c)
-        # print("openList length: ", len(openList))
-        # heapify(openList)
-        print("openList: ", openList, "\nopenListLocations: ", openListLocations)
-        # print("openList after heapify: ", openList, "\nclosedList: ", closedList)
-        if i == 4:
+                    print("\nc: ", c, "is ClosedList: ", closedList)
+            # print("openList before heapify: ", openList)
+            index = index + 1
+            # print("childNode",index, ": ", childNode)
+            # print("c: ", c)
+            # print("openList length: ", len(openList))
             # heapify(openList)
-            # print("closedList: ",closedList, "\nopenList length: ", len(openList))
+            # print("openList: ", openList, "\nopenListLocations: ", openListLocations)
             # print("openList after heapify: ", openList, "\nclosedList: ", closedList)
-            print("All 3rd value from every element in OpenList: ", openList[:][3])
+        if i == 5:
+            # print("All 3rd value from every element in OpenList: ", openList[:][3])
+            print("\nopenList: ", openList)
             print("BREAKING LOOP")
             break
+
     return "FAILURE"
 
 ############################### Step Three ########################################
@@ -325,7 +337,8 @@ startNode = (0, 0, None, (7, 7))
 print("Node format: (C2C, Node index, parent index, (x,y)) \nstartNode: ", startNode)
 goalNode = (0, 0, None, (591, 245))
 # findChildren(startNode)
-dijkstra(startNode, goalNode)
+print(dijkstra(startNode, goalNode))
+
 
 # print("startNode: ", startNode, "\nnewNode after moving: ", newNode)
 
