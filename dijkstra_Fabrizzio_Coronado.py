@@ -12,56 +12,56 @@ startTime = time.time()
 def moveRight(node):
     x, y = node[3]
     newX = x + 1
-    cost = 1
+    cost = round(1, 1)
     newNode = (cost, node[1], node[2], (newX, y)) # only update location after performing move
     return newNode
 
 def moveLeft(node):
     x, y = node[3]
     newX = x - 1
-    cost = 1
+    cost = round(1, 1)
     newNode = (cost, node[1], node[2], (newX, y))
     return newNode
 
 def moveUp(node):
     x, y = node[3]
     newY = y + 1
-    cost = 1
+    cost = round(1, 1)
     newNode = (cost, node[1], node[2], (x, newY))
     return newNode
 
 def moveDown(node):
     x, y = node[3]
     newY = y - 1
-    cost = 1
+    cost = round(1, 1)
     newNode = (cost, node[1], node[2], (x, newY))
     return newNode
 
 def moveUpRight(node):
     x, y = node[3]
     newX, newY = x + 1, y + 1
-    cost = 1.4
+    cost = round(1.4,1)
     newNode = (cost, node[1], node[2], (newX, newY))
     return newNode
 
 def moveUpLeft(node):
     x, y = node[3]
     newX, newY = x - 1, y + 1
-    cost = 1.4
+    cost = round(1.4,1)
     newNode = (cost, node[1], node[2], (newX, newY))
     return newNode
 
 def moveDownRight(node):
     x, y = node[3]
     newX, newY = x + 1, y - 1
-    cost = 1.4
+    cost = round(1.4,1)
     newNode = (cost, node[1], node[2], (newX, newY))
     return newNode
 
 def moveDownLeft(node):
     x, y = node[3]
     newX, newY = x - 1, y - 1
-    cost = 1.4
+    cost = round(1.4,1)
     newNode = (cost, node[1], node[2], (newX, newY))
     return newNode
 
@@ -101,7 +101,7 @@ def checkObstacleSpace(node):
 
     x = node[3][0]
     y = node[3][1]
-    
+
     # hexagon equations
     m1hex = ((166 - 206)/(370 - 300)) # slope of bottom right hexagon line
     b1hex = 166 - m1hex * 370
@@ -228,7 +228,7 @@ def dijkstra(startNode, goalNode):
         print("***********************************************")
         print("time thru open List: ", i, "\nCurrent Node from openList = ", currentNode, "\nopenList: ", openList, "\nclosedList: ", closedList) # currentLocation from openListLocations: ", currentLocation, \
         print("***********************************************")
-      
+
         #       "\nopenList: ", openList, "\nopenListLocations: ",openListLocations, "\nclosedList: ", closedList, \
         # openListLocations.append(currentNode[3]) # to make sure the index is always in range later? pray this works
 
@@ -241,10 +241,10 @@ def dijkstra(startNode, goalNode):
             for c in findChildren(currentNode):
                 # print("current c: ", c)
                 if c[3] not in closedListLocations and checkObstacleSpace(c) == "Not in obstacle space":
-                    childC2C = currentNode[0] + c[0] # adding cost of action to current C2C
+                    childC2C = round(currentNode[0] + c[0], 1) # adding cost of action to current C2C
                     # print("cost: ", childC2C)
                     num = 0
-                    
+
                     for node in openList:
                         if node[3] == c[3]:
                             num = num + 1 # check through all locations in openList, if the location is present increment num
@@ -256,7 +256,7 @@ def dijkstra(startNode, goalNode):
                         print("\nc: ", c, "is not in  openList!, adding to the list...")
                         # print("openList: ", openList) #"openListLocations: ", openListLocations)
                         # print("openListLocations: ", openListLocations)
-                        childC2C = currentNode[0] + c[0] # sum the popped node and add the child step cost
+                        childC2C = round(currentNode[0] + c[0], 1) # sum the popped node and add the child step cost
                         nodeIndex = len(openList) + len(closedList) # index of this child node is the sum of all elements in openList and closedList
                         # node = (C2C, node index, parent node index, (x, y)) .. type is tuple
                         childNode = (childC2C, nodeIndex, currentNode[1], c[3]) # construct the childNode tuple
@@ -280,12 +280,12 @@ def dijkstra(startNode, goalNode):
                                 # print("node1_index: ", node1_index)
                                 print("openList: ", openList)
                                 node1 = openList[node1_index] # gather the entire node from openList
-                                newC2C = currentNode[0] + c[0] # add the current childs cost to its parent to compare with node1 in openList
+                                newC2C = round(currentNode[0] + c[0], 1) # add the current childs cost to its parent to compare with node1 in openList
                                 print("node1_index: ", node1_index, "node1: ", node1, "newC2C of child is: ", newC2C)
                                 if  newC2C < node1[0]:
-                                    nodeIndex = len(openList) + len(closedList) # node index = length of openList + closedList
-                                    childNode = (newC2C, nodeIndex, currentNode[1], c[3]) # if the child has not been checked OR we found a lower childC2C, assign it the currentNode as the parent
-                                    print("     updating node ", openList[nodeIndex], "to: ", childNode)
+                                    # nodeIndex = len(openList) + len(closedList) # node index = length of openList + closedList
+                                    childNode = (newC2C, len(openList) + len(closedList), currentNode[1], c[3]) # if the child has not been checked OR we found a lower childC2C, assign it the currentNode as the parent
+                                    print("     updating node ", openList[node1_index], "to: ", childNode)
                                     openList[node1_index] = childNode
                                     print("     updated openList: ", openList)
                                 else: print("       new C2C: ", newC2C, "> C2C: ",openList[node1_index][0], "not updating node: ", openList[node1_index])
@@ -299,7 +299,7 @@ def dijkstra(startNode, goalNode):
             # heapify(openList)
             # print("openList: ", openList, "\nopenListLocations: ", openListLocations)
             # print("openList after heapify: ", openList, "\nclosedList: ", closedList)
-        if i == 5:
+        if i == 32:
             # print("All 3rd value from every element in OpenList: ", openList[:][3])
             print("\nopenList: ", openList)
             print("BREAKING LOOP")
@@ -337,12 +337,8 @@ startNode = (0, 0, None, (7, 7))
 print("Node format: (C2C, Node index, parent index, (x,y)) \nstartNode: ", startNode)
 goalNode = (0, 0, None, (591, 245))
 # findChildren(startNode)
-print(dijkstra(startNode, goalNode))
-
-
-# print("startNode: ", startNode, "\nnewNode after moving: ", newNode)
-
-# print("\nlocation: ", startNode[3], checkObstacleSpace(startNode))
+result = dijkstra(startNode, goalNode)
+print("result: ",result)
 
 endTime = time.time()
 print("\nrun time = ", endTime - startTime, "seconds")
