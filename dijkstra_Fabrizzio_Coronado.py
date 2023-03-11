@@ -102,52 +102,56 @@ def checkObstacleSpace(node):
     x = node[3][0]
     y = node[3][1] 
 
-    # hexagon equations
-    # assigned the values so they didnt have to be calculated everytime but i left my calculations commented
-    # m1hex = ((166 - 206)/(370 - 300)) # slope of bottom right hexagon line
-    m1hex = -4/7
-    # b1hex = 166 - m1hex * 370
-    b1hex = 2642/7
-    h1hex = y - (m1hex * x + b1hex)
-    # m2hex = ((84 - 44)/(370 - 300)) # slope of top right hexagon line
-    m2hex = 4/7
-    # b2hex = 84 - m2hex * 370
-    b2hex = -892/7
-    h2hex = y - (m2hex * x + b2hex)
-    m3hex = -4/7 # slope of top left hexagon line is the same as bottom right
-    # b3hex = 44 - m3hex * 300
-    b3hex = 1508/7
-    h3hex = y - (m3hex * x + b3hex)
-    m4hex = 4/7 # slope of bottom left is the same as top right
-    # b4hex = 166 - m4hex * 230
-    b4hex = 242/7
-    h4hex = y - (m4hex * x + b4hex)
-    # print("m1hex = ", m1hex, "b1hex = ", b1hex, "h1hex = ", h1hex)
-    # print("m2hex = ", m2hex, "b2hex = ", b2hex, "h2hex = ", h2hex)
-    # print("m3hex = ", m3hex, "b3hex = ", b3hex, "h3hex = ", h3hex)
-    # print("m4hex = ", m4hex, "b4hex = ", b4hex, "h4hex = ", h4hex)
+    # # hexagon equations
+    # # assigned the values so they didnt have to be calculated everytime but i left my calculations commented
+    # # m1hex = ((166 - 206)/(370 - 300)) # slope of bottom right hexagon line
+    # m1hex = -4/7
+    # # b1hex = 166 - m1hex * 370
+    # b1hex = 2642/7
+    # h1hex = y - (m1hex * x + b1hex)
+    # # m2hex = ((84 - 44)/(370 - 300)) # slope of top right hexagon line
+    # m2hex = 4/7
+    # # b2hex = 84 - m2hex * 370
+    # b2hex = -892/7
+    # h2hex = y - (m2hex * x + b2hex)
+    # m3hex = -4/7 # slope of top left hexagon line is the same as bottom right
+    # # b3hex = 44 - m3hex * 300
+    # b3hex = 1508/7
+    # h3hex = y - (m3hex * x + b3hex)
+    # m4hex = 4/7 # slope of bottom left is the same as top right
+    # # b4hex = 166 - m4hex * 230
+    # b4hex = 242/7
+    # h4hex = y - (m4hex * x + b4hex)
+    # # print("m1hex = ", m1hex, "b1hex = ", b1hex, "h1hex = ", h1hex)
+    # # print("m2hex = ", m2hex, "b2hex = ", b2hex, "h2hex = ", h2hex)
+    # # print("m3hex = ", m3hex, "b3hex = ", b3hex, "h3hex = ", h3hex)
+    # # print("m4hex = ", m4hex, "b4hex = ", b4hex, "h4hex = ", h4hex)
 
-    # triangle equations
-    # m1tri = ((125 - 25)/(510 - 460))
-    m1tri = 2
-    # b1tri = 125 - m1tri * 510
-    b1tri = - 895
-    h1tri = y - (m1tri * x + b1tri)
-    # m2tri = ((125 - 225)/(510 - 460))
-    m2tri = -2
-    # b2tri = 225 - m2tri * 460
-    b2tri = 1145
-    h2tri = y - (m2tri * x + b2tri)
-    # print("m1tri & b1 tri = ", m1tri, b1tri, "\nm2tri & b2tri = ", m2tri, b2tri)
+    # # triangle equations
+    # # m1tri = ((125 - 25)/(510 - 460))
+    # m1tri = 2
+    # # b1tri = 125 - m1tri * 510
+    # b1tri = - 895
+    # h1tri = y - (m1tri * x + b1tri)
+    # # m2tri = ((125 - 225)/(510 - 460))
+    # m2tri = -2
+    # # b2tri = 225 - m2tri * 460
+    # b2tri = 1145
+    # h2tri = y - (m2tri * x + b2tri)
+    # # print("m1tri & b1 tri = ", m1tri, b1tri, "\nm2tri & b2tri = ", m2tri, b2tri)
 
-    # checking if point is in obstacle space
-    if x >= 95 and x <= 155 and y >= 145 and y <= 250 or \
-        x >= 95 and x <= 155 and y >= 0 and y <= 105 or \
-        x >= 230 and x <= 370 and y >= 44 and y <= 206 and h1hex <= 0 and h2hex >= 0 and h3hex >= 0 and h4hex <= 0 or \
-        x >= 460 and h1tri >= 0 and h2tri <= 0 or \
-        x <= 5 or x >= 595 or y <= 5 or y >= 245:
+    # # checking if point is in obstacle space
+    # if x >= 95 and x <= 155 and y >= 145 and y <= 250 or \
+    #     x >= 95 and x <= 155 and y >= 0 and y <= 105 or \
+    #     x >= 230 and x <= 370 and y >= 44 and y <= 206 and h1hex <= 0 and h2hex >= 0 and h3hex >= 0 and h4hex <= 0 or \
+    #     x >= 460 and h1tri >= 0 and h2tri <= 0 or \
+    #     x <= 5 or x >= 595 or y <= 5 or y >= 245:
+    #     return "In Obstacle Space"
+    # return "Not in obstacle space"
+
+    if (canvas[y][x] != np.array([0, 0, 0])).any():
         return "In Obstacle Space"
-    return "Not in obstacle space"
+    else: return "Not in obstacle space"
 
 # cv2.imshow("Empty canvas", canvas)
 # cv2.waitKey(0)
@@ -255,7 +259,6 @@ def dijkstra(startNode, goalNode):
                     for node in openList:
                         if node[3] == c[3]:
                             num = num + 1 # check through all locations in openList, if the location is present increment num
-                            node1_index = openList.index(node)
                             # status = "present" # check through all locations in openList, if the location is present then do the following
                         # else: num = 0
                     # print("num outside of num loop: ", num)
@@ -281,22 +284,22 @@ def dijkstra(startNode, goalNode):
                         # # print("just added c: ", c, "to openListLocations: ", openListLocations, "\n")
                         # print("openList: ", openList, "openListLocations: ", openListLocations, "\n")
                     else: # child is in openList, check if we need to update
-                        # for node in openList:
-                            # if node[3] == c[3]:
-                                # node1_index = openList.index(node) # if the node location = this child location, get its index
-                        print("\nc: ", c, "is in openList! at index: ", node1_index)
-                        # print("node1_index: ", node1_index)
-                        print("openList: ", openList)
-                        node1 = openList[node1_index] # gather the entire node from openList
-                        newC2C = round(currentNode[0] + c[0], 1) # add the current childs cost to its parent to compare with node1 in openList
-                        print("node1_index: ", node1_index, "node1: ", node1, "newC2C of child is: ", newC2C)
-                        if  newC2C < node1[0]:
-                            # nodeIndex = len(openList) + len(closedList) # node index = length of openList + closedList
-                            childNode = (newC2C, len(openList) + len(closedList), currentNode[1], c[3]) # if the child has not been checked OR we found a lower childC2C, assign it the currentNode as the parent
-                            print("     updating node ", openList[node1_index], "to: ", childNode)
-                            openList[node1_index] = childNode
-                            print("     updated openList: ", openList)
-                        else: print("       new C2C: ", newC2C, "> C2C: ",openList[node1_index][0], "not updating node: ", openList[node1_index])
+                        for node in openList:
+                            if node[3] == c[3]:
+                                node1_index = openList.index(node) # if the node location = this child location, get its index
+                                print("\nc: ", c, "is in openList! at index: ", node1_index)
+                                # print("node1_index: ", node1_index)
+                                print("openList: ", openList)
+                                node1 = openList[node1_index] # gather the entire node from openList
+                                newC2C = round(currentNode[0] + c[0], 1) # add the current childs cost to its parent to compare with node1 in openList
+                                print("node1_index: ", node1_index, "node1: ", node1, "newC2C of child is: ", newC2C)
+                                if  newC2C < node1[0]:
+                                    # nodeIndex = len(openList) + len(closedList) # node index = length of openList + closedList
+                                    childNode = (newC2C, len(openList) + len(closedList), currentNode[1], c[3]) # if the child has not been checked OR we found a lower childC2C, assign it the currentNode as the parent
+                                    print("     updating node ", openList[node1_index], "to: ", childNode)
+                                    openList[node1_index] = childNode
+                                    print("     updated openList: ", openList)
+                                else: print("       new C2C: ", newC2C, "> C2C: ",openList[node1_index][0], "not updating node: ", openList[node1_index])
                 else:
                     print("\nc: ", c, "is ClosedList: ", closedList)
             # print("openList before heapify: ", openList)
@@ -307,11 +310,11 @@ def dijkstra(startNode, goalNode):
             # heapify(openList)
             # print("openList: ", openList, "\nopenListLocations: ", openListLocations)
             # print("openList after heapify: ", openList, "\nclosedList: ", closedList)
-        if i == 2:
-            # print("All 3rd value from every element in OpenList: ", openList[:][3])
-            print("\nopenList: ", openList)
-            print("BREAKING LOOP")
-            break
+        # if i == 32:
+        #     # print("All 3rd value from every element in OpenList: ", openList[:][3])
+        #     print("\nopenList: ", openList)
+        #     print("BREAKING LOOP")
+        #     break
 
     return "FAILURE"
 
@@ -381,6 +384,9 @@ def generateVideo(path, canvas):
 #     goalNode = (None, None, None, (xGoal, yGoal))
 #     if checkObstacleSpace(goalNode) == "In Obstacle Space":
 #         print("\nIn Obstacle space, please try again...")
+
+# startNode = (0, 0, None, (454, 125))
+# print(checkObstacleSpace(startNode))
 
 startNode = (0, 0, None, (7, 7))
 print("Node format: (C2C, Node index, parent index, (x,y)) \nstartNode: ", startNode)
