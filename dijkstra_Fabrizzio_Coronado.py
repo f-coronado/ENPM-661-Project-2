@@ -1,9 +1,8 @@
 import time
-from heapq import heappush, heapify, heappop, heappushpop, nlargest, nsmallest, heapreplace
+from heapq import heappush, heappop
 import cv2
 import numpy as np
 from copy import deepcopy
-import glob
 
 startTime = time.time()
 
@@ -101,20 +100,27 @@ cv2.fillPoly(canvas, [triangle], red)
 def checkObstacleSpace(node):
 
     x = node[3][0]
-    y = node[3][1]
+    y = node[3][1] 
 
     # hexagon equations
-    m1hex = ((166 - 206)/(370 - 300)) # slope of bottom right hexagon line
-    b1hex = 166 - m1hex * 370
+    # assigned the values so they didnt have to be calculated everytime but i left my calculations commented
+    # m1hex = ((166 - 206)/(370 - 300)) # slope of bottom right hexagon line
+    m1hex = -4/7
+    # b1hex = 166 - m1hex * 370
+    b1hex = 2642/7
     h1hex = y - (m1hex * x + b1hex)
-    m2hex = ((84 - 44)/(370 - 300)) # slope of top right hexagon line
-    b2hex = 84 - m2hex * 370
+    # m2hex = ((84 - 44)/(370 - 300)) # slope of top right hexagon line
+    m2hex = 4/7
+    # b2hex = 84 - m2hex * 370
+    b2hex = -892/7
     h2hex = y - (m2hex * x + b2hex)
-    m3hex = m1hex # slope of top left hexagon line is the same as bottom right
-    b3hex = 44 - m3hex * 300
+    m3hex = -4/7 # slope of top left hexagon line is the same as bottom right
+    # b3hex = 44 - m3hex * 300
+    b3hex = 1508/7
     h3hex = y - (m3hex * x + b3hex)
-    m4hex = m2hex # slope of bottom left is the same as top right
-    b4hex = 166 - m4hex * 230
+    m4hex = 4/7 # slope of bottom left is the same as top right
+    # b4hex = 166 - m4hex * 230
+    b4hex = 242/7
     h4hex = y - (m4hex * x + b4hex)
     # print("m1hex = ", m1hex, "b1hex = ", b1hex, "h1hex = ", h1hex)
     # print("m2hex = ", m2hex, "b2hex = ", b2hex, "h2hex = ", h2hex)
@@ -122,11 +128,15 @@ def checkObstacleSpace(node):
     # print("m4hex = ", m4hex, "b4hex = ", b4hex, "h4hex = ", h4hex)
 
     # triangle equations
-    m1tri = ((125 - 25)/(510 - 460))
-    b1tri = 125 - m1tri * 510
+    # m1tri = ((125 - 25)/(510 - 460))
+    m1tri = 2
+    # b1tri = 125 - m1tri * 510
+    b1tri = - 895
     h1tri = y - (m1tri * x + b1tri)
-    m2tri = ((125 - 225)/(510 - 460))
-    b2tri = 225 - m2tri * 460
+    # m2tri = ((125 - 225)/(510 - 460))
+    m2tri = -2
+    # b2tri = 225 - m2tri * 460
+    b2tri = 1145
     h2tri = y - (m2tri * x + b2tri)
     # print("m1tri & b1 tri = ", m1tri, b1tri, "\nm2tri & b2tri = ", m2tri, b2tri)
 
@@ -192,10 +202,6 @@ def findChildren(node):
     # heappush(children,newNodeUpLeft)
     children.append(newNodeUpLeft)
 
-
-    # heapify(children)
-    # print("children: ", children)
-
     return children
 
 def goalNodeReached(node, goalNode):
@@ -242,7 +248,7 @@ def dijkstra(startNode, goalNode):
             for c in findChildren(currentNode):
                 # print("current c: ", c)
                 if c[3] not in closedListLocations and checkObstacleSpace(c) == "Not in obstacle space":
-                    childC2C = round(currentNode[0] + c[0], 1) # adding cost of action to current C2C
+                    # childC2C = round(currentNode[0] + c[0], 1) # adding cost of action to current C2C
                     # print("cost: ", childC2C)
                     num = 0
 
@@ -349,7 +355,7 @@ def generateVideo(path, canvas):
     for i, (x, y) in enumerate(myList):
         currentCanvas = canvas.copy()
         # cv2.circle(image, center, radius, color)
-        cv2.circle(currentCanvas, (x, y), 2, (255, 255, 255))
+        cv2.circle(currentCanvas, (x, y), 1, (255, 255, 255))
         videoWriter.write(currentCanvas)
 
     videoWriter.release()
@@ -377,10 +383,10 @@ def generateVideo(path, canvas):
 
 startNode = (0, 0, None, (7, 7))
 print("Node format: (C2C, Node index, parent index, (x,y)) \nstartNode: ", startNode)
-goalNode = (0, 0, None, (20, 100))
-# findChildren(startNode)
+goalNode = (0, 0, None, (10, 30))
+
 result = dijkstra(startNode, goalNode)
-print("\npath: ",result)
+print("\npath taken: ",result)
 generateVideo(result, canvas)
 
 endTime = time.time()
