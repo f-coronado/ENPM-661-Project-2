@@ -3,6 +3,7 @@ from heapq import heappush, heapify, heappop, heappushpop, nlargest, nsmallest, 
 import cv2
 import numpy as np
 from copy import deepcopy
+import glob
 
 startTime = time.time()
 
@@ -313,6 +314,7 @@ def dijkstra(startNode, goalNode):
 
 def back_track(goalNode, closedList):
     path = []
+    locations = []
     currentNode = goalNode
     
     while currentNode is not None:
@@ -324,12 +326,35 @@ def back_track(goalNode, closedList):
             if node[1] == currentNodeIndex:
                 currentNode = node
                 break
+
+        # for coordinates in path:
+        #     locations.append(coordinates[3])
                 
     return path[::-1]
 
 ############################### Step Four #########################################
 
 ############################### Step Five #########################################
+
+def generateVideo(path, canvas):
+
+    myList = []
+    for locations in path:
+        myList.append(locations[3])
+
+    size = (600, 250)
+    # result = cv2.VideoWriter('dijkstraSearch.mp4', cv2.VideoWriter_fourcc(codec), FPS, (width, height))
+    videoWriter = cv2.VideoWriter('dijkstraSearch.mp4', cv2.VideoWriter_fourcc(*'MJPG'), 10, size)
+
+    for i, (x, y) in enumerate(myList):
+        currentCanvas = canvas.copy()
+        # cv2.circle(image, center, radius, color)
+        cv2.circle(currentCanvas, (x, y), 2, (255, 255, 255))
+        videoWriter.write(currentCanvas)
+
+    videoWriter.release()
+    cv2.destroyAllWindows()
+
 ############################### Step Five #########################################
 
 # startNode = (0, 0, None, (300, 125)) # initializing startNode so we enter the loop
@@ -352,10 +377,11 @@ def back_track(goalNode, closedList):
 
 startNode = (0, 0, None, (7, 7))
 print("Node format: (C2C, Node index, parent index, (x,y)) \nstartNode: ", startNode)
-goalNode = (0, 0, None, (9, 9))
+goalNode = (0, 0, None, (20, 100))
 # findChildren(startNode)
 result = dijkstra(startNode, goalNode)
 print("\npath: ",result)
+generateVideo(result, canvas)
 
 endTime = time.time()
 print("\nrun time = ", endTime - startTime, "seconds")
