@@ -325,6 +325,12 @@ def generateVideo(path, canvas):
     for locations in path:
         myList.append(locations[3])
 
+    green = (0, 255, 0)
+    radius = 2
+
+    for location in myList:
+        cv2.circle(canvas, center = location, radius = radius, color = green, thickness = 1)
+
     size = (600, 250)
     # result = cv2.VideoWriter('dijkstraSearch.mp4', cv2.VideoWriter_fourcc(codec), FPS, (width, height))
     videoWriter = cv2.VideoWriter('dijkstraSearch.mp4', cv2.VideoWriter_fourcc(*'MJPG'), 10, size)
@@ -332,7 +338,7 @@ def generateVideo(path, canvas):
     for i, (x, y) in enumerate(myList):
         currentCanvas = canvas.copy()
         # cv2.circle(image, center, radius, color)
-        cv2.circle(currentCanvas, (x, y), 0, (255, 255, 255))
+        cv2.circle(currentCanvas, (x, y), 5, (255, 0, 0))
         videoWriter.write(currentCanvas)
 
     videoWriter.release()
@@ -364,7 +370,8 @@ def generateVideo(path, canvas):
 startNode = (0, 0, None, (7, 7))
 print("Node format: (C2C, Node index, parent index, (x,y)) \nstartNode: ", startNode)
 # goalNode = (0, 0, None, (10, 30))
-goalNode = (0, 0, None, (520, 125))
+goalNode = (0, 0, None, (170, 125))
+# goalNode = (0, 0, None, (520, 125))
 
 result = dijkstra(startNode, goalNode)
 print("\npath taken: ",result)
